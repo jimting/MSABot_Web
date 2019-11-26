@@ -6,7 +6,7 @@ var logger = require('morgan');
 var request = require('request');
 
 //for rabbitmq
-var context = require('rabbit.js').createContext('amqp://140.121.196.23:4111');
+var context = require('rabbit.js').createContext('amqp://140.121.197.130:5502');
 
 //mongo add-on
 var MongoClient = require('mongodb').MongoClient;
@@ -49,7 +49,7 @@ app.get('/auth/redirect', (req, res) =>{
         }else{
 	    	//write user data to mongo
 	    	var MongoClient = require('mongodb').MongoClient;
-		var url = "mongodb://140.121.196.23:4114/apuser";
+		var url = "mongodb://140.121.197.130:5503/apuser";
 
 		MongoClient.connect(url, { useNewUrlParser: false }, function(err, db) {
 		  if (err) throw err;
@@ -76,24 +76,6 @@ app.get("/mqTest", (req, res) =>{
 	});
 	res.send("send Success!");
 })
-
-app.get('/mongoTest', (req, res) =>{
-        var MongoClient = require('mongodb').MongoClient;
-	var url = "mongodb://140.121.196.23:4114/apuser";
-
-	MongoClient.connect(url, { useNewUrlParser: false }, function(err, db) {
-	  if (err) throw err;
-	  var dbo = db.db("apuser");
-	  var testData = {'group':'JTGroup', 'access_token':'xoxb-330574132855-SKE6x1YDXfoUqG6prLZOKczL'};
-	  dbo.collection("apuser").insertOne(testData);
-	  dbo.collection("apuser").find({}, function(err, result) {
-	    if (err) throw err;
-	    console.log(result);
-	    db.close();
-	  });
-	}); 
-	res.send("success!"); 
-    })
 
 app.post('/auth/events', (req, res) =>{
     console.log(req.body.challenge);
