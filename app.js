@@ -90,6 +90,19 @@ app.get("/mqTest", (req, res) =>{
 	res.send("send Success!");
 })
 
+app.get('/testDB', (req, res) =>{
+	var MongoClient = require('mongodb').MongoClient;
+
+		MongoClient.connect(userDB, { useNewUrlParser: false }, function(err, db) 
+		{
+			if (err) throw err;
+			var dbo = db.db("apuser");
+			var testData = {'access_token':"TestData", 'scope':"TestData", 'user_id':"TestData", 'team_name':"TestData", 'team_id':"TestData", 'bot_user_id':"TestData", 'bot_access_token':"TestData", 'eureka':[], 'jenkins':[], 'zuul':[], 'vmamv':[]};
+			dbo.collection("apuser").insertOne(testData);
+			res.send("SUCCESSFULY INSERTING!!!");
+		});
+})
+
 app.post('/auth/events', (req, res) =>
 {
 	console.log(req.body.challenge);
