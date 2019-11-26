@@ -1,3 +1,8 @@
+var userDB = process.env.UserDB;
+var client_id = process.env.client_id;
+var client_secret = process.env.client_secret;
+var MQserver = process.env.rabbitmq;
+
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
@@ -6,7 +11,7 @@ var logger = require('morgan');
 var request = require('request');
 
 //for rabbitmq
-var context = require('rabbit.js').createContext('amqp://140.121.197.130:5502');
+var context = require('rabbit.js').createContext(MQserver);
 
 //mongo add-on
 var MongoClient = require('mongodb').MongoClient;
@@ -16,6 +21,7 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
 var app = express();
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -38,7 +44,7 @@ app.get('/auth/redirect', (req, res) =>{
     var options = {
         uri: 'https://slack.com/api/oauth.access?code='
             +req.query.code+
-            '&client_id=329491346420.652179506566&client_secret=9f71bb5faa0f07f6f869f99e5ba46d7d',
+            '&client_id='+client_id+'&client_secret='+client_secret,
         method: 'GET'
     }
     request(options, (error, response, body) => {
@@ -49,7 +55,7 @@ app.get('/auth/redirect', (req, res) =>{
         }else{
 	    	//write user data to mongo
 	    	var MongoClient = require('mongodb').MongoClient;
-		var url = "mongodb://140.121.197.130:5503/apuser";
+		var url = userDB;
 
 		MongoClient.connect(url, { useNewUrlParser: false }, function(err, db) {
 		  if (err) throw err;
